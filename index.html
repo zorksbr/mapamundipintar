@@ -5,8 +5,9 @@
   <title>Mapa da Europa Pintável</title>
   <style>
     body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
-    svg { width: 95%; max-width: 900px; margin: 20px auto; display: block; }
+    svg { width: 95%; max-width: 1000px; margin: 20px auto; display: block; }
     path { fill: #eee; stroke: #333; cursor: pointer; transition: fill 0.3s; }
+    #mar { fill: #87ceeb; } /* cor do mar */
     input { margin: 15px; }
   </style>
 </head>
@@ -15,7 +16,6 @@
   <p>Escolha uma cor e clique em um país para pintá-lo</p>
   <input type="color" id="colorPicker" value="#ff0000">
 
-  <!-- Aqui o mapa será carregado -->
   <div id="mapa"></div>
 
   <script type="module" src="script.js"></script>
