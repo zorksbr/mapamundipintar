@@ -3,13 +3,14 @@ import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebase
 
 // === Substitua pelos dados do seu Firebase ===
 const firebaseConfig = {
-  apiKey: "SUA-API-KEY",
+  apiKey: "AIzaSyC8Qg4KA4PVcVPosRHygyobl6XobYK0a8Q",
   authDomain: "mapamundipintar.firebaseapp.com",
-  databaseURL: "https://mapamundipintar.firebaseio.com",
+  databaseURL: "https://mapamundipintar-default-rtdb.firebaseio.com",
   projectId: "mapamundipintar",
-  storageBucket: "mapamundipintar.appspot.com",
-  messagingSenderId: "XXX",
-  appId: "1:XXX:web:XXX"
+  storageBucket: "mapamundipintar.firebasestorage.app",
+  messagingSenderId: "930014631774",
+  appId: "1:930014631774:web:ac7dd2b709ed9826d721cf",
+  measurementId: "G-PN8J84HY7E"
 };
 
 const app = initializeApp(firebaseConfig);
