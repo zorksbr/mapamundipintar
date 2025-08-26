@@ -1,7 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-// === Substitua pelos dados do seu Firebase ===
+// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC8Qg4KA4PVcVPosRHygyobl6XobYK0a8Q",
   authDomain: "mapamundipintar.firebaseapp.com",
@@ -13,11 +10,15 @@ const firebaseConfig = {
   measurementId: "G-PN8J84HY7E"
 };
 
+// Importa Firebase (via CDN)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // Carrega o SVG da Europa
-fetch("https://upload.wikimedia.org/wikipedia/commons/0/05/Blank_map_of_Europe_(without_disputed_regions).svg")
+fetch("mapa.svg")
   .then(r => r.text())
   .then(svg => {
     // Adiciona o "mar" azul atrás
@@ -27,7 +28,7 @@ fetch("https://upload.wikimedia.org/wikipedia/commons/0/05/Blank_map_of_Europe_(
 
     const picker = document.getElementById("colorPicker");
 
-    // Para cada país (assumindo que cada país é um <path> com id)
+    // Para cada país (<path> com id no SVG)
     document.querySelectorAll("#mapa path").forEach(pais => {
       pais.addEventListener("click", () => {
         set(ref(db, "mapa/" + pais.id), picker.value);
