@@ -17,28 +17,46 @@ import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Carrega o SVG da Europa
+// Carrega o SVG do mapa
 fetch("mapa.svg")
   .then(r => r.text())
   .then(svg => {
-    // Adiciona o "mar" azul atrás
-    svg = svg.replace('<svg', '<svg><rect id="mar" x="0" y="0" width="100%" height="100%" />');
+    // 🔹 Insere o mar azul fixo
+    svg = svg.replace(
+      '<svg',
+      '<svg><rect id="mar" x="0" y="0" width="100%" height="100%" fill="#87CEEB"/>'
+    );
 
     document.getElementById("mapa").innerHTML = svg;
 
     const picker = document.getElementById("colorPicker");
 
-    // Para cada país (<path> com id no SVG)
+    // 🔹 Salva a cor original de cada país
     document.querySelectorAll("#mapa path").forEach(pais => {
-      pais.addEventListener("click", () => {
-        set(ref(db, "mapa/" + pais.id), picker.value);
-      });
+      pais.dataset.originalFill = pais.getAttribute("fill") || "#ccc";
 
-      const paisRef = ref(db, "mapa/" + pais.id);
-      onValue(paisRef, snapshot => {
-        if (snapshot.exists()) {
-          pais.setAttribute("fill", snapshot.val());
-        }
+      pais.addEventListener("click", () => {
+        const corAtual = pais.getAttribute("fill");
+        const novaCor =
+          corAtual === picker.value
+            ? pais.dataset.originalFill // volta pra original
+            : picker.value;
+
+        set(ref(db, "mapa/" + pais.id), novaCor);
       });
+    });
+
+    // 🔹 Listener único para todo o mapa
+    const mapaRef = ref(db, "mapa");
+    onValue(mapaRef, snapshot => {
+      const dados = snapshot.val();
+      if (dados) {
+        Object.entries(dados).forEach(([id, cor]) => {
+          const pais = document.getElementById(id);
+          if (pais) {
+            pais.setAttribute("fill", cor);
+          }
+        });
+      }
     });
   });
