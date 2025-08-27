@@ -21,7 +21,7 @@ const db = getDatabase(app);
 fetch("mapa.svg")
   .then(r => r.text())
   .then(svg => {
-    // Insere o mar azul fixo
+    // Mar azul fixo
     svg = svg.replace(
       '<svg',
       '<svg><rect id="mar" x="0" y="0" width="100%" height="100%" fill="#87CEEB"/>'
@@ -31,17 +31,20 @@ fetch("mapa.svg")
 
     const picker = document.getElementById("colorPicker");
 
-    // Salva cor original de cada país
+    // Salva a cor original de cada país
     document.querySelectorAll("#mapa path").forEach(pais => {
-      pais.dataset.originalFill = pais.getAttribute("fill") || "#ccc";
+      // usa getComputedStyle para pegar cor inicial do CSS
+      const corInicial = getComputedStyle(pais).fill;
+      pais.dataset.originalFill = corInicial || "#ccc";
 
       pais.addEventListener("click", () => {
-        const corAtual = pais.getAttribute("fill");
+        const corAtual = getComputedStyle(pais).fill;
         const novaCor =
           corAtual === picker.value
-            ? pais.dataset.originalFill // volta para cor original
+            ? pais.dataset.originalFill
             : picker.value;
 
+        // atualiza Firebase
         set(ref(db, "mapa/" + pais.id), novaCor);
       });
     });
