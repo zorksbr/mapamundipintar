@@ -2,68 +2,66 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Mapa da Europa Pintável</title>
+  <title>Mapa Mundi Pintar</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-    }
-
-    h1 {
-      margin-top: 20px;
-    }
-
-    .color-picker {
-      margin: 15px 0;
-    }
-
-    #map-container {
+      background: #87CEEB; /* mar azul */
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      margin: 0 auto;
-      width: 90%;
-      height: 80vh;
-      background: #87CEEB; /* Azul do mar */
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      overflow: hidden;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
     }
-
-    svg {
-      width: 100%;
-      height: 100%;
+    #svg-map {
+      width: 90%;
+      height: 90vh;
+      border: 2px solid #333;
+      background: #87CEEB;
+    }
+    #controls {
+      margin: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-  <h1>🇪🇺 Mapa da Europa Pintável</h1>
-  <p>Escolha uma cor e clique em um país para pintá-lo</p>
-
-  <div class="color-picker">
+  <div id="controls">
+    <label>Escolha uma cor: </label>
     <input type="color" id="colorPicker" value="#ff0000">
   </div>
 
-  <div id="map-container">
-    <!-- Aqui o mapa SVG será carregado -->
-    <object id="svgMap" type="image/svg+xml" data="mapa.svg"></object>
-  </div>
+  <object id="svg-map" data="mapa.svg" type="image/svg+xml"></object>
 
   <script>
     const colorPicker = document.getElementById("colorPicker");
-    const svgObject = document.getElementById("svgMap");
+    let selectedColor = colorPicker.value;
 
-    svgObject.addEventListener("load", () => {
-      const svgDoc = svgObject.contentDocument;
+    colorPicker.addEventListener("input", () => {
+      selectedColor = colorPicker.value;
+    });
+
+    document.getElementById("svg-map").addEventListener("load", () => {
+      const svgDoc = document.getElementById("svg-map").contentDocument;
       const paths = svgDoc.querySelectorAll("path");
 
-      paths.forEach(path => {
-        path.style.cursor = "pointer";
-        path.addEventListener("click", () => {
-          path.setAttribute("fill", colorPicker.value);
+      paths.forEach(element => {
+        // salva a cor original
+        element.dataset.originalFill = element.getAttribute("fill");
+
+        element.addEventListener("click", () => {
+          const current = element.style.fill || element.getAttribute("fill");
+
+          if (current === selectedColor) {
+            // volta pra cor original
+            element.style.fill = element.dataset.originalFill;
+          } else {
+            // pinta com a cor escolhida
+            element.style.fill = selectedColor;
+          }
         });
       });
     });
