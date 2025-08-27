@@ -10,7 +10,7 @@ const firebaseConfig = {
   measurementId: "G-PN8J84HY7E"
 };
 
-// Importa Firebase (via CDN)
+// Importa Firebase via CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
@@ -21,7 +21,7 @@ const db = getDatabase(app);
 fetch("mapa.svg")
   .then(r => r.text())
   .then(svg => {
-    // 🔹 Insere o mar azul fixo
+    // Insere o mar azul fixo
     svg = svg.replace(
       '<svg',
       '<svg><rect id="mar" x="0" y="0" width="100%" height="100%" fill="#87CEEB"/>'
@@ -31,7 +31,7 @@ fetch("mapa.svg")
 
     const picker = document.getElementById("colorPicker");
 
-    // 🔹 Salva a cor original de cada país
+    // Salva cor original de cada país
     document.querySelectorAll("#mapa path").forEach(pais => {
       pais.dataset.originalFill = pais.getAttribute("fill") || "#ccc";
 
@@ -39,14 +39,14 @@ fetch("mapa.svg")
         const corAtual = pais.getAttribute("fill");
         const novaCor =
           corAtual === picker.value
-            ? pais.dataset.originalFill // volta pra original
+            ? pais.dataset.originalFill // volta para cor original
             : picker.value;
 
         set(ref(db, "mapa/" + pais.id), novaCor);
       });
     });
 
-    // 🔹 Listener único para todo o mapa
+    // Listener único para todo o mapa
     const mapaRef = ref(db, "mapa");
     onValue(mapaRef, snapshot => {
       const dados = snapshot.val();
