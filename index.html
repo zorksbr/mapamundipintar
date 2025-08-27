@@ -2,22 +2,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Mapa Mundi Pintar</title>
+  <title>Mapa Mundi Colaborativo</title>
   <style>
     body {
-      background: #87CEEB; /* mar azul */
+      background: #87CEEB;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100vh;
       margin: 0;
-    }
-    #svg-map {
-      width: 90%;
-      height: 90vh;
-      border: 2px solid #333;
-      background: #87CEEB;
+      font-family: Arial, sans-serif;
     }
     #controls {
       margin: 10px;
@@ -25,6 +20,12 @@
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    #mapa {
+      width: 90%;
+      height: 85vh;
+      border: 2px solid #333;
+      background: #87CEEB;
     }
   </style>
 </head>
@@ -34,65 +35,8 @@
     <input type="color" id="colorPicker" value="#ff0000">
   </div>
 
-  <object id="svg-map" data="mapa.svg" type="image/svg+xml"></object>
+  <div id="mapa"></div>
 
-<script type="module">
-  import { db } from "./firebase-config.js";
-  import { doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const colorPicker = document.getElementById("colorPicker");
-  let selectedColor = colorPicker.value;
-
-  colorPicker.addEventListener("input", () => {
-    selectedColor = colorPicker.value;
-  });
-
-  // 🔹 Salvar mudança no Firestore
-  async function salvarCor(idPais, cor) {
-    await setDoc(doc(db, "paises", idPais), { cor });
-  }
-
-  // 🔹 Listener para aplicar mudanças em tempo real
-  function iniciarListener(svgDoc) {
-    const ref = collection(db, "paises");
-    onSnapshot(ref, (snapshot) => {
-      snapshot.forEach((docSnap) => {
-        const { cor } = docSnap.data();
-        const el = svgDoc.getElementById(docSnap.id);
-        if (el) {
-          el.style.fill = cor;
-        }
-      });
-    });
-  }
-
-  // 🔹 Quando o SVG carregar
-  document.getElementById("svg-map").addEventListener("load", () => {
-    const svgDoc = document.getElementById("svg-map").contentDocument;
-    const paths = svgDoc.querySelectorAll("path");
-
-    // inicia listener do Firebase
-    iniciarListener(svgDoc);
-
-    paths.forEach(element => {
-      // cor original
-      element.dataset.originalFill = element.getAttribute("fill");
-
-      element.addEventListener("click", () => {
-        const current = element.style.fill || element.getAttribute("fill");
-        let novaCor;
-
-        if (current === selectedColor) {
-          novaCor = element.dataset.originalFill;
-        } else {
-          novaCor = selectedColor;
-        }
-
-        // atualiza no Firebase
-        salvarCor(element.id, novaCor);
-      });
-    });
-  });
-</script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
