@@ -4,20 +4,69 @@
   <meta charset="UTF-8">
   <title>Mapa da Europa Pintável</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
-    svg { width: 95%; max-width: 1000px; margin: 20px auto; display: block; }
-    path { fill: #eee; stroke: #333; cursor: pointer; transition: fill 0.3s; }
-    #mar { fill: #87ceeb; } /* cor do mar */
-    input { margin: 15px; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .color-picker {
+      margin: 15px 0;
+    }
+
+    #map-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      width: 90%;
+      height: 80vh;
+      background: #87CEEB; /* Azul do mar */
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 <body>
   <h1>🇪🇺 Mapa da Europa Pintável</h1>
   <p>Escolha uma cor e clique em um país para pintá-lo</p>
-  <input type="color" id="colorPicker" value="#ff0000">
 
-  <div id="mapa"></div>
+  <div class="color-picker">
+    <input type="color" id="colorPicker" value="#ff0000">
+  </div>
 
-  <script type="module" src="script.js"></script>
+  <div id="map-container">
+    <!-- Aqui o mapa SVG será carregado -->
+    <object id="svgMap" type="image/svg+xml" data="mapa_corrigido.svg"></object>
+  </div>
+
+  <script>
+    const colorPicker = document.getElementById("colorPicker");
+    const svgObject = document.getElementById("svgMap");
+
+    svgObject.addEventListener("load", () => {
+      const svgDoc = svgObject.contentDocument;
+      const paths = svgDoc.querySelectorAll("path");
+
+      paths.forEach(path => {
+        path.style.cursor = "pointer";
+        path.addEventListener("click", () => {
+          path.setAttribute("fill", colorPicker.value);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
